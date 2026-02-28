@@ -45,11 +45,12 @@ class _ProductListingScreenState extends State<ProductListingScreen>
                     expandedHeight: 220,
                     pinned: true,
                     backgroundColor: Colors.black,
+                    toolbarHeight: 80,
 
                     forceElevated: innerBoxIsScrolled,
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
-                      titlePadding: const EdgeInsets.only(bottom: 110),
+                      titlePadding: const EdgeInsets.only(bottom: 110, top: 40),
                       title: const Text(
                         'DARAZ SHOP',
                         style: TextStyle(

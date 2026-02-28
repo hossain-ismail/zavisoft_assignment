@@ -5,6 +5,9 @@ A Flutter application implementing a product listing screen with a collapsible h
 ## Video Demonstration
 [Watch Execution Video](https://drive.google.com/file/d/1vlv0RQB2lf_ugKCSYfVLTUHFLp13vE2Y/view?usp=sharing)
 
+## Download APK
+[Download Android APK](https://drive.google.com/file/d/14n1XsDW_c5Mb3vVuH5krl-J7dd_rrn3X/view?usp=sharing)
+
 ## Screenshot
 <img width="250" height="561" alt="Screenshot_1772294903" src="https://github.com/user-attachments/assets/1bb509dc-e14b-4986-b585-236df908aeb4" />
 <img width="250" height="561" alt="Screenshot_1772294912" src="https://github.com/user-attachments/assets/03e505af-f3e9-4e99-9c64-8cdcfa1ef82c" />

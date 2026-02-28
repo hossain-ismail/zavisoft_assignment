@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
@@ -11,10 +12,37 @@ class ProductController extends GetxController {
   var selectedCategory = 'all'.obs;
   var displayedProducts = <Product>[].obs;
 
+  TabController? tabController;
+
   @override
   void onInit() {
     super.onInit();
     fetchData();
+  }
+
+  void initTabController(TickerProvider vsync) {
+    if (categories.isNotEmpty) {
+      // Safely dispose old controller
+      final oldController = tabController;
+      
+      tabController = TabController(
+        length: categories.length,
+        vsync: vsync,
+        initialIndex: categories.indexOf(selectedCategory.value).clamp(0, categories.length - 1),
+      );
+      
+      tabController!.addListener(() {
+        if (!tabController!.indexIsChanging) {
+          changeCategory(categories[tabController!.index]);
+        }
+      });
+
+      // Schedule update for next frame to avoid "Build scheduled during frame"
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        oldController?.dispose();
+        update();
+      });
+    }
   }
 
   Future<void> fetchData() async {
@@ -27,6 +55,7 @@ class ProductController extends GetxController {
     
     filterProducts();
     isLoading.value = false;
+    update(); // Notify that categories are ready
   }
 
   void filterProducts() {
@@ -46,5 +75,11 @@ class ProductController extends GetxController {
 
   Future<void> refreshData() async {
     await fetchData();
+  }
+
+  @override
+  void onClose() {
+    tabController?.dispose();
+    super.onClose();
   }
 }

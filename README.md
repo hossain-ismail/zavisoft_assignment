@@ -5,7 +5,13 @@ A Flutter application implementing a product listing screen with a collapsible h
 ## Video Demonstration
 [Watch Execution Video](https://drive.google.com/file/d/1vlv0RQB2lf_ugKCSYfVLTUHFLp13vE2Y/view?usp=sharing)
 
-## Mandatory Explanation
+## Screenshot
+<img width="250" height="561" alt="Screenshot_1772294903" src="https://github.com/user-attachments/assets/1bb509dc-e14b-4986-b585-236df908aeb4" />
+<img width="250" height="561" alt="Screenshot_1772294912" src="https://github.com/user-attachments/assets/03e505af-f3e9-4e99-9c64-8cdcfa1ef82c" />
+<img width="250" height="561" alt="Screenshot_1772294918" src="https://github.com/user-attachments/assets/ff41bc42-1179-434b-a915-c20f8c884faa" />
+<img width="250" height="561" alt="Screenshot_1772294930" src="https://github.com/user-attachments/assets/80e25d32-9c46-4258-a181-e87a41a7053b" />
+
+## Explanation
 
 ### 1. How horizontal swipe was implemented
 Horizontal swipe navigation is implemented using a native Flutter **`TabBarView`** synchronized with a shared **`TabController`**. 

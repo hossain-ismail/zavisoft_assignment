@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zavisoft_assignment/controllers/product_controller.dart';
 import 'routes/app_routes.dart';
-import 'controllers/auth_controller.dart';
+
 
 void main() {
-  Get.put(AuthController());
-  Get.put(ProductController());
   runApp(MyApp());
 }
 

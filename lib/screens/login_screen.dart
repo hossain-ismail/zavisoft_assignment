@@ -52,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                     if (success) {
                       Get.offNamed('/home');
                     } else {
-                      Get.offNamed('/home');
+                          Get.offNamed('/home');
                       Get.snackbar('Error', 'Login failed', 
                         snackPosition: SnackPosition.BOTTOM);
                     }

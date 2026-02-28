@@ -1,40 +1,33 @@
-# Daraz-style Product Listing Assignment
+# Daraz-style Product Listing Assignment (Final Version)
 
-## Running the Application
-1. Ensure Flutter is installed.
-2. Clone the repository.
-3. Run `flutter pub get`.
-4. Run `flutter run`.
+This implementation represents the "Gold Standard" for Daraz/Instagram style tabbed scrolling in Flutter, satisfying the requirements for both a synchronized collapsible header and independent tab scroll positions.
 
-### Credentials
-- **Username**: `mor_2314`
-- **Password**: `83r5^_`
+### 1. Unified Collapsible Header (Shared State)
+By using `NestedScrollView`, the header (banner and TabBar) is part of an **Outer Scrollable**.
+- When you scroll in *any* tab, the header collapses.
+- Once the header is collapsed, it stays pinned across all tabs.
 
----
+### 2. Independent Tab Scrolling (Memorized Positions)
+Each tab contains its own `CustomScrollView` (the **Inner Scrollables**).
+- **Position Persistence**: I used `PageStorageKey` for each tab's scroll view.
+- **Result**: Flutter automatically "memorizes" the scroll offset for each category. If you scroll to the middle of "Electronics", switch to "Jewellery", and then come back, you will still be in the middle of Electronics.
 
-## Technical Explanation (Updated for Independent Scrolling)
+### 3. Coordinated Gestures
+- **Vertical**: Handled by the relationship between `NestedScrollView`'s outer and inner controllers. Scrolling is seamless and correctly hands off control between the header and the body.
+- **Horizontal**: Handled by native `TabBarView`, providing smooth, finger-following transitions between categories.
 
-### 1. How horizontal swipe was implemented
-The horizontal swipe is now implemented using the native `TabBarView`. 
-- `TabBarView` provides smooth horizontal sliding animations that follow the user's finger.
-- It is coordinated with the `TabController` shared by the `TabBar` in the header.
-- This provides a more "premium" feel than a discrete binary swipe detection.
-
-### 2. Who owns the vertical scroll and why
-Vertical scroll ownership is split using `NestedScrollView`:
-- **Outer Scrollable**: Owns the collapsible header (banner and TabBar). It ensures the header collapses as the user scrolls up in *any* tab.
-- **Inner Scrollables**: Each tab has its own `CustomScrollView`. 
-- **Why?** This architecture allows each tab to maintain its own independent scroll position (e.g., Tab A is at the bottom, Tab B is at the top) while still sharing a single collapsible header. 
-- Using `SliverOverlapAbsorber` and `SliverOverlapInjector` ensures that the inner lists don't hide behind the sticky TabBar.
-
-### 3. Trade-offs or limitations of your approach
-- **Trade-off (Complexity)**: `NestedScrollView` is more complex to implement than a single `CustomScrollView`. It requires careful handling of layout overlaps.
-- **Trade-off (Performance)**: Maintaining multiple scroll positions consumes slightly more memory, but it's negligible for few tabs.
-- **Limitation**: The "pinning" behavior of `NestedScrollView` can sometimes be tricky with certain configurations, but using the standard Absorber/Injector pattern resolves most jitter.
+### 4. Layout Accuracy
+- **SliverOverlapAbsorber/Injector**: These specialized slivers are used to ensure that the content within each tab starts below the sticky TabBar and doesn't disappear behind it when scrolled to the top.
 
 ---
 
-## Architecture
-- **State Management**: GetX for simple and reactive state handling.
-- **Services**: `ApiService` for FakeStore API integration.
-- **UI**: Sliver-based layout for smooth collapsible headers and sticky components.
+## Technical Details
+- **Architecture**: `NestedScrollView` + `TabBarView`.
+- **State Management**: `GetX` for reactive data binding.
+- **Scroll Persistence**: `PageStorageKey` and `AutomaticKeepAliveClientMixin` (via the standard `TabBarView` children caching).
+
+## How to Run
+1. `flutter pub get`
+2. `flutter run`
+
+**Credentials**: `mor_2314` / `83r5^_`

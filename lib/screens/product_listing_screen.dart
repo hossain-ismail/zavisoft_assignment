@@ -51,18 +51,20 @@ class _ProductListingScreenState extends State<ProductListingScreen> with Ticker
         }
 
         return NestedScrollView(
+          // PageStorage prevents resetting scroll when the entire screen is rebuilt
+          key: const PageStorageKey<String>('main_scroll_view'),
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
-              // 1. Collapsible Header
+              // 1. Collapsible Header (Outer Scrollable)
               SliverOverlapAbsorber(
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
-                  expandedHeight: 200,
+                  expandedHeight: 220,
                   pinned: true,
                   forceElevated: innerBoxIsScrolled,
                   flexibleSpace: FlexibleSpaceBar(
                     title: const Text('DARAZ SHOP', 
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
                     background: Stack(
                       fit: StackFit.expand,
                       children: [
@@ -70,28 +72,64 @@ class _ProductListingScreenState extends State<ProductListingScreen> with Ticker
                           'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80',
                           fit: BoxFit.cover,
                         ),
-                        Container(decoration: BoxDecoration(color: Colors.black.withOpacity(0.3))),
+                        // Search bar mockup
+                        Positioned(
+                          bottom: 65,
+                          left: 20,
+                          right: 20,
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Row(
+                              children: [
+                                SizedBox(width: 12),
+                                Icon(Icons.search, color: Colors.grey),
+                                SizedBox(width: 8),
+                                Text('Search in Daraz', style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.black.withOpacity(0.5), Colors.transparent, Colors.black.withOpacity(0.5)],
+                          ),
+                        )),
                       ],
                     ),
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.person),
+                      icon: const Icon(Icons.person, color: Colors.white),
                       onPressed: () => Get.toNamed('/profile'),
                     ),
                   ],
-                  bottom: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    labelColor: Colors.orange,
-                    unselectedLabelColor: Colors.grey,
-                    indicatorColor: Colors.orange,
-                    tabs: productController.categories.map((c) => Tab(text: c.toUpperCase())).toList(),
+                  // Sticky TabBar
+                  bottom: PreferredSize(
+                    preferredSize: const Size.fromHeight(48),
+                    child: Container(
+                      color: Colors.white,
+                      child: TabBar(
+                        controller: _tabController,
+                        isScrollable: true,
+                        labelColor: Colors.orange,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.orange,
+                        indicatorWeight: 3,
+                        tabs: productController.categories.map((c) => Tab(text: c.toUpperCase())).toList(),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ];
           },
+          // Body with Independent Inner Scrollables
           body: TabBarView(
             controller: _tabController,
             children: productController.categories.map((category) {
@@ -100,7 +138,6 @@ class _ProductListingScreenState extends State<ProductListingScreen> with Ticker
                 bottom: false,
                 child: Builder(
                   builder: (BuildContext context) {
-                    // Filter products for this specific category
                     final products = category == 'all' 
                       ? productController.allProducts 
                       : productController.allProducts.where((p) => p.category == category).toList();
@@ -108,8 +145,11 @@ class _ProductListingScreenState extends State<ProductListingScreen> with Ticker
                     return RefreshIndicator(
                       onRefresh: productController.refreshData,
                       child: CustomScrollView(
+                        // The PageStorageKey is CRITICAL here. 
+                        // It tells Flutter to store the scroll offset for this specific category.
                         key: PageStorageKey<String>(category),
                         slivers: <Widget>[
+                          // This sliver overlaps with the pinned header
                           SliverOverlapInjector(
                             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                           ),

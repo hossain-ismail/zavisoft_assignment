@@ -1,33 +1,45 @@
-# Daraz-style Product Listing Assignment (Final Version)
+# Daraz-style Product Listing Assignment
 
-This implementation represents the "Gold Standard" for Daraz/Instagram style tabbed scrolling in Flutter, satisfying the requirements for both a synchronized collapsible header and independent tab scroll positions.
+A Flutter application implementing a product listing screen with a collapsible header, sticky tab bar, and independent tab scrolling.
 
-### 1. Unified Collapsible Header (Shared State)
-By using `NestedScrollView`, the header (banner and TabBar) is part of an **Outer Scrollable**.
-- When you scroll in *any* tab, the header collapses.
-- Once the header is collapsed, it stays pinned across all tabs.
+## Mandatory Explanation
 
-### 2. Independent Tab Scrolling (Memorized Positions)
-Each tab contains its own `CustomScrollView` (the **Inner Scrollables**).
-- **Position Persistence**: I used `PageStorageKey` for each tab's scroll view.
-- **Result**: Flutter automatically "memorizes" the scroll offset for each category. If you scroll to the middle of "Electronics", switch to "Jewellery", and then come back, you will still be in the middle of Electronics.
+### 1. How horizontal swipe was implemented
+Horizontal swipe navigation is implemented using a native Flutter **`TabBarView`** synchronized with a shared **`TabController`**. 
+- **User Experience**: This provides a smooth, "finger-following" transition between categories, which is standard in modern apps like Daraz or Instagram.
+- **State Selection**: The `TabController` is managed by the `ProductController` (GetX), allowing it to synchronize the current category data with the UI across both the sticky `TabBar` and the `TabBarView`.
 
-### 3. Coordinated Gestures
-- **Vertical**: Handled by the relationship between `NestedScrollView`'s outer and inner controllers. Scrolling is seamless and correctly hands off control between the header and the body.
-- **Horizontal**: Handled by native `TabBarView`, providing smooth, finger-following transitions between categories.
+### 2. Who owns the vertical scroll and why?
+The vertical scroll is owned by a **`NestedScrollView`** architecture.
+- **Outer Scrollable**: The `SliverAppBar` (banner, search bar, and sticky tab bar) is part of the `NestedScrollView`'s outer scrollable area.
+- **Inner Scrollables**: Each tab contains its own independent `CustomScrollView`.
+- **Reasoning**: This architecture is the most robust way to achieve a "Shared Header" that collapses across all tabs while allowing each tab to maintain its own unique content and offset. By using `SliverOverlapAbsorber` and `SliverOverlapInjector`, we ensure the content doesn't disappear behind the sticky header.
 
-### 4. Layout Accuracy
-- **SliverOverlapAbsorber/Injector**: These specialized slivers are used to ensure that the content within each tab starts below the sticky TabBar and doesn't disappear behind it when scrolled to the top.
+### 3. Trade-offs or limitations of the approach
+- **Complexity**: `NestedScrollView` is significantly more complex to coordinate than a single `CustomScrollView`. It requires careful use of `SliverOverlapAbsorber` and `SliverOverlapInjector` to prevent content from being obscured.
+- **Memory/Persistence**: Maintaining independent positions for many tabs consumes more memory. We mitigated this by using **`PageStorageKey`**, which persists the scroll offset efficiently without keeping all widgets in memory.
+- **Notch Handling**: We had to manually adjust the `toolbarHeight` and `titlePadding` of the `SliverAppBar` to ensure the title doesn't overlap with the device's camera notch when collapsed.
 
 ---
 
-## Technical Details
-- **Architecture**: `NestedScrollView` + `TabBarView`.
-- **State Management**: `GetX` for reactive data binding.
-- **Scroll Persistence**: `PageStorageKey` and `AutomaticKeepAliveClientMixin` (via the standard `TabBarView` children caching).
+## Technical Stack
+- **Framework**: Flutter
+- **State Management**: GetX (for business logic and TabController management)
+- **API**: FakeStore API (https://fakestoreapi.com)
+- **Architecture**: Slivers + NestedScrollView
 
-## How to Run
-1. `flutter pub get`
-2. `flutter run`
+## Run Instructions
 
-**Credentials**: `mor_2314` / `83r5^_`
+1.  **Clone the project**
+2.  **Fetch dependencies**:
+    ```bash
+    flutter pub get
+    ```
+3.  **Run the application**:
+    ```bash
+    flutter run
+    ```
+
+**Credentials (Mock)**:
+- **Username**: `mor_2314`
+- **Password**: `83r5^_`
